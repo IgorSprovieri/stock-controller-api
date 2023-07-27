@@ -3,6 +3,7 @@ import { object, string } from "yup";
 import { dataBase } from "../db";
 import { User } from "../entities/user";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export class UserController {
   async post(req: Request, res: Response) {
@@ -44,6 +45,50 @@ export class UserController {
       userCreated.password_hash = "";
 
       return res.status(201).json(userCreated);
+    } catch (error: Error | unknown) {
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unexpected Error",
+      });
+    }
+  }
+  async login(req: Request, res: Response) {
+    try {
+      const { body } = req;
+
+      const schema = object({
+        email: string().email().required(),
+        password: string().required(),
+      });
+
+      await schema.validate(body);
+
+      const { email, password } = body;
+
+      const user = await dataBase
+        .getRepository(User)
+        .findOneBy({ email: email });
+
+      if (!user) {
+        throw new Error("User or password is invalid");
+      }
+
+      const passwordIsValid = await bcrypt.compare(
+        password,
+        user.password_hash
+      );
+
+      if (!passwordIsValid) {
+        throw new Error("User or password is invalid");
+      }
+
+      const secret = process.env.HASH_SECRET || "secret";
+      const token = jwt.sign({ id: user.id }, secret, {
+        expiresIn: "1d",
+      });
+
+      user.password_hash = "";
+
+      return res.status(200).json({ ...user, token: token });
     } catch (error: Error | unknown) {
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unexpected Error",
