@@ -25,5 +25,6 @@ router.delete("/product/:id", productController.delete);
 
 router.post("/movement", movementController.post);
 router.get("/movements", movementController.get);
+router.put("/movement/:id", movementController.put);
 
 export { router };

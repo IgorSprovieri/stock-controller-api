@@ -28,7 +28,7 @@ export class ProductController {
       const product = new Product({
         name: name,
         user: user,
-        quantity: quantity,
+        quantity: Number(quantity),
       });
 
       const productCreated = await dataBase

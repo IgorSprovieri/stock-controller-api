@@ -29,13 +29,13 @@ export class MovementController {
         return res.status(404).json({ error: "Product not found" });
       }
 
-      product.quantity = product.quantity + quantity;
+      product.quantity = Number(product.quantity) + Number(quantity);
 
       await dataBase.getRepository(Product).save(product);
 
       const movement = new Movement({
         date: date,
-        quantity: quantity,
+        quantity: Number(quantity),
         leftover: leftover,
         user: user,
         product: product,
@@ -82,6 +82,105 @@ export class MovementController {
       });
 
       return res.status(200).json(movements);
+    } catch (error: Error | unknown) {
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unexpected error",
+      });
+    }
+  }
+
+  async put(req: Request, res: Response) {
+    try {
+      const { body, params } = req;
+
+      const schema = object({
+        product_id: string(),
+        date: yupDate(),
+        quantity: number().integer(),
+      });
+
+      await schema.validate(body);
+
+      const { product_id, quantity, date, leftover } = body;
+      const { id } = params;
+
+      const movement = await dataBase
+        .getRepository(Movement)
+        .findOneBy({ id: id });
+
+      if (!movement) {
+        return res.status(404).json({ error: "Movement not found" });
+      }
+
+      if (product_id) {
+        const oldProduct = await dataBase
+          .getRepository(Product)
+          .findOneBy({ id: product_id });
+
+        if (!oldProduct) {
+          return res.status(404).json({ error: "Old product not found" });
+        }
+
+        const newProduct = await dataBase
+          .getRepository(Product)
+          .findOneBy({ id: product_id });
+
+        if (!newProduct) {
+          return res.status(404).json({ error: "Product not found" });
+        }
+
+        oldProduct.quantity =
+          Number(oldProduct.quantity) - Number(movement.quantity);
+
+        if (quantity) {
+          movement.quantity = Number(quantity);
+        }
+
+        newProduct.quantity =
+          Number(newProduct.quantity) + Number(movement.quantity);
+
+        await dataBase.getRepository(Product).save(oldProduct);
+        await dataBase.getRepository(Product).save(newProduct);
+
+        movement.product = newProduct;
+      }
+
+      if (quantity && !product_id) {
+        const product = await dataBase
+          .getRepository(Product)
+          .findOneBy({ id: product_id });
+
+        if (!product) {
+          return res.status(404).json({ error: "Product not found" });
+        }
+
+        product.quantity =
+          Number(product.quantity) +
+          Number(quantity) -
+          Number(movement.quantity);
+
+        await dataBase.getRepository(Product).save(product);
+
+        movement.quantity = Number(quantity);
+      }
+
+      if (date) {
+        movement.date = date;
+      }
+
+      if (leftover) {
+        movement.leftover = leftover;
+      }
+
+      const movementUpdated = await dataBase
+        .getRepository(Movement)
+        .save(movement);
+
+      if (!movementUpdated) {
+        throw new Error("Rent not updated");
+      }
+
+      return res.status(200).json(movementUpdated);
     } catch (error: Error | unknown) {
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unexpected error",
