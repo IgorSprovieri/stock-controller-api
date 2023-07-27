@@ -8,7 +8,7 @@ interface userDTO {
   password_hash: string;
 }
 
-@Entity()
+@Entity({ name: "users" })
 export class User {
   constructor(data: userDTO) {
     Object.assign(this, data);

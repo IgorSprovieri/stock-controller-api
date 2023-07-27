@@ -51,6 +51,7 @@ export class UserController {
       });
     }
   }
+
   async login(req: Request, res: Response) {
     try {
       const { body } = req;
@@ -82,7 +83,7 @@ export class UserController {
       }
 
       const secret = process.env.HASH_SECRET || "secret";
-      const token = jwt.sign({ id: user.id }, secret, {
+      const token = jwt.sign({ user_id: user.id }, secret, {
         expiresIn: "1d",
       });
 
