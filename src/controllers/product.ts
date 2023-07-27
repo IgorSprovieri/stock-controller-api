@@ -86,7 +86,7 @@ export class ProductController {
         .findOneBy({ id: id });
 
       if (!product) {
-        return new Error("Product not found");
+        return res.status(404).json({ error: "Product not found" });
       }
 
       product.name = name;
@@ -100,6 +100,36 @@ export class ProductController {
       }
 
       return res.status(200).json(productUpdated);
+    } catch (error: Error | unknown) {
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unexpected error",
+      });
+    }
+  }
+
+  async delete(req: Request, res: Response) {
+    try {
+      const { params } = req;
+
+      const { id } = params;
+
+      const product = await dataBase
+        .getRepository(Product)
+        .findOneBy({ id: id });
+
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      const productDeleted = await dataBase
+        .getRepository(Product)
+        .delete(product);
+
+      if (!productDeleted) {
+        throw new Error("Product not deleted");
+      }
+
+      return res.status(200).json({ sucess: true });
     } catch (error: Error | unknown) {
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unexpected error",
