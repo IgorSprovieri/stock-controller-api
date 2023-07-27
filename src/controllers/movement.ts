@@ -3,6 +3,7 @@ import { boolean, date as yupDate, number, object, string } from "yup";
 import { dataBase } from "../db";
 import { Product } from "../entities/product";
 import { Movement } from "../entities/movement";
+import { Between } from "typeorm";
 
 export class MovementController {
   async post(req: Request, res: Response) {
@@ -49,6 +50,38 @@ export class MovementController {
       }
 
       return res.status(201).json(movementCreated);
+    } catch (error: Error | unknown) {
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unexpected error",
+      });
+    }
+  }
+
+  async get(req: Request, res: Response) {
+    try {
+      const { query }: any = req;
+
+      const schema = object({
+        initialDate: yupDate().required(),
+        finalDate: yupDate().required(),
+        leftover: boolean(),
+      });
+
+      await schema.validate(query);
+
+      const {
+        initialDate,
+        finalDate,
+        leftover,
+      }: { initialDate: Date; finalDate: Date; leftover: boolean | undefined } =
+        query;
+
+      const movements = await dataBase.getRepository(Movement).find({
+        where: { date: Between(initialDate, finalDate), leftover: leftover },
+        relations: ["product"],
+      });
+
+      return res.status(200).json(movements);
     } catch (error: Error | unknown) {
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unexpected error",
