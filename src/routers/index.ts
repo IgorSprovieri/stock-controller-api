@@ -1,5 +1,9 @@
 import express, { Request, Response } from "express";
-import { productController, userController } from "../controllers";
+import {
+  movementController,
+  productController,
+  userController,
+} from "../controllers";
 import { authMiddleware } from "../middlewares";
 
 const router = express.Router();
@@ -18,5 +22,7 @@ router.post("/product", productController.post);
 router.get("/products", productController.get);
 router.put("/product/:id", productController.put);
 router.delete("/product/:id", productController.delete);
+
+router.post("/movement", movementController.post);
 
 export { router };

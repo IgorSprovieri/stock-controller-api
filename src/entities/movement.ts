@@ -7,6 +7,9 @@ interface movementDTO {
   id?: string;
   user: User;
   product: Product;
+  date: Date;
+  quantity: number;
+  leftover: boolean;
 }
 
 @Entity({ name: "movements" })
