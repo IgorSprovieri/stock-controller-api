@@ -16,5 +16,6 @@ router.use(authMiddleware.validateJwt);
 
 router.post("/product", productController.post);
 router.get("/products", productController.get);
+router.put("/product/:id", productController.put);
 
 export { router };

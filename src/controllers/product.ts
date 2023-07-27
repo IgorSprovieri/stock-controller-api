@@ -34,7 +34,7 @@ export class ProductController {
         throw new Error("Product not created");
       }
 
-      return res.status(201).json(body);
+      return res.status(201).json(productCreated);
     } catch (error: Error | unknown) {
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unexpected error",
@@ -52,6 +52,54 @@ export class ProductController {
         .find({ where: { ...query, user: user } });
 
       return res.status(200).json(products);
+    } catch (error: Error | unknown) {
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unexpected error",
+      });
+    }
+  }
+
+  async put(req: Request, res: Response) {
+    try {
+      const { params } = req;
+      const { body } = req;
+
+      const schema = object({
+        name: string().required(),
+      });
+
+      await schema.validate(body);
+
+      const { name } = body;
+      const { id } = params;
+
+      const exists = await dataBase
+        .getRepository(Product)
+        .findOneBy({ name: name });
+
+      if (exists) {
+        throw new Error("Product name already exists");
+      }
+
+      const product = await dataBase
+        .getRepository(Product)
+        .findOneBy({ id: id });
+
+      if (!product) {
+        return new Error("Product not found");
+      }
+
+      product.name = name;
+
+      const productUpdated = await dataBase
+        .getRepository(Product)
+        .save(product);
+
+      if (!productUpdated) {
+        throw new Error("Product not updated");
+      }
+
+      return res.status(200).json(productUpdated);
     } catch (error: Error | unknown) {
       return res.status(400).json({
         error: error instanceof Error ? error.message : "Unexpected error",
