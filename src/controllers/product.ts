@@ -41,4 +41,21 @@ export class ProductController {
       });
     }
   }
+
+  async get(req: Request, res: Response) {
+    try {
+      const { query } = req;
+      const { user } = req.body;
+
+      const products = await dataBase
+        .getRepository(Product)
+        .find({ where: { ...query, user: user } });
+
+      return res.status(200).json(products);
+    } catch (error: Error | unknown) {
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unexpected error",
+      });
+    }
+  }
 }
