@@ -28,6 +28,10 @@ export class MovementController {
         return res.status(404).json({ error: "Product not found" });
       }
 
+      product.quantity = product.quantity + quantity;
+
+      await dataBase.getRepository(Product).save(product);
+
       const movement = new Movement({
         date: date,
         quantity: quantity,

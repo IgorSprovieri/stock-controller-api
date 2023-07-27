@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { object, string } from "yup";
+import { number, object, string } from "yup";
 import { dataBase } from "../db";
 import { Product } from "../entities/product";
 
@@ -10,11 +10,12 @@ export class ProductController {
 
       const schema = object({
         name: string().required(),
+        quantity: number().required(),
       });
 
       await schema.validate(body);
 
-      const { name, user } = body;
+      const { name, user, quantity } = body;
 
       const exists = await dataBase
         .getRepository(Product)
@@ -24,7 +25,11 @@ export class ProductController {
         throw new Error("Product already exists");
       }
 
-      const product = new Product({ name: name, user: user });
+      const product = new Product({
+        name: name,
+        user: user,
+        quantity: quantity,
+      });
 
       const productCreated = await dataBase
         .getRepository(Product)

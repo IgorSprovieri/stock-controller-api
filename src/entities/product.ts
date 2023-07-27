@@ -6,6 +6,7 @@ interface productDTO {
   id?: string;
   user: User;
   name: string;
+  quantity: number;
 }
 
 @Entity({ name: "products" })
@@ -27,4 +28,7 @@ export class Product {
 
   @Column("text")
   name: string;
+
+  @Column("numeric")
+  quantity: number;
 }
