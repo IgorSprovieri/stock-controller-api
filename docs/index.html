@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Stock Controller API</title>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Stock Controller API Docs</h1>
+    </header>
+
+    <section>
+      <h3><span class="create">POST</span>/user</h3>
+      <div>
+        <p>name: string</p>
+        <p>email: string</p>
+        <p>password: string</p>
+      </div>
+
+      <h3><span class="create">POST</span>/login</h3>
+      <div>
+        <p>email: string</p>
+        <p>password: string</p>
+      </div>
+      <h3><span class="create">POST</span>/product</h3>
+
+      <div class="auth-required">
+        <img class="auth-icon" src="./auth-icon.svg" alt="Auth Icon" />
+        <p class="auth-text">Bearer Token</p>
+      </div>
+      <div>
+        <p>name: string</p>
+        <p>quantity: number</p>
+      </div>
+
+      <h3><span class="update">PUT</span>/product/:id</h3>
+      <div class="auth-required">
+        <img class="auth-icon" src="./auth-icon.svg" alt="Auth Icon" />
+        <p class="auth-text">Bearer Token</p>
+      </div>
+      <div>
+        <p>name: string</p>
+      </div>
+      <h3><span class="read">GET</span>/product</h3>
+      <div class="auth-required">
+        <img class="auth-icon" src="./auth-icon.svg" alt="Auth Icon" />
+        <p class="auth-text">Bearer Token</p>
+      </div>
+      <h3><span class="delete">DELETE</span>/product/:id</h3>
+      <div class="auth-required">
+        <img class="auth-icon" src="./auth-icon.svg" alt="Auth Icon" />
+        <p class="auth-text">Bearer Token</p>
+      </div>
+
+      <h3><span class="create">POST</span>/movement</h3>
+      <div class="auth-required">
+        <img class="auth-icon" src="./auth-icon.svg" alt="Auth Icon" />
+        <p class="auth-text">Bearer Token</p>
+      </div>
+      <div>
+        <p>product_id: string</p>
+        <p>date: date</p>
+        <p>quantity: number</p>
+        <p>leftover: boolean</p>
+      </div>
+      <h3><span class="update">PUT</span>/movement/:id</h3>
+      <div class="auth-required">
+        <img class="auth-icon" src="./auth-icon.svg" alt="Auth Icon" />
+        <p class="auth-text">Bearer Token</p>
+      </div>
+      <div>
+        <p>product_id: string</p>
+        <p>date: date</p>
+        <p>quantity: number</p>
+        <p>leftover: boolean</p>
+      </div>
+      <h3><span class="read">GET</span>/movement</h3>
+      <div class="auth-required">
+        <img class="auth-icon" src="./auth-icon.svg" alt="Auth Icon" />
+        <p class="auth-text">Bearer Token</p>
+      </div>
+
+      <h3><span class="delete">DELETE</span>/movement/:id</h3>
+      <div class="auth-required">
+        <img class="auth-icon" src="./auth-icon.svg" alt="Auth Icon" />
+        <p class="auth-text">Bearer Token</p>
+      </div>
+    </section>
+    <footer>Developed By Igor Sprovieri</footer>
+  </body>
+</html>
