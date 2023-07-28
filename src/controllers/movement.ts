@@ -187,4 +187,46 @@ export class MovementController {
       });
     }
   }
+
+  async delete(req: Request, res: Response) {
+    try {
+      const { params } = req;
+
+      const { id } = params;
+
+      const movement = await dataBase
+        .getRepository(Movement)
+        .findOneBy({ id: id });
+
+      if (!movement) {
+        return res.status(404).json({ error: "Movement not found" });
+      }
+
+      const product = await dataBase
+        .getRepository(Product)
+        .findOneBy({ id: movement.product.id });
+
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      product.quantity = Number(product.quantity) - Number(movement.quantity);
+
+      await dataBase.getRepository(Product).save(product);
+
+      const movementDeleted = await dataBase
+        .getRepository(Movement)
+        .delete(movement);
+
+      if (!movementDeleted) {
+        throw new Error("Rent not updated");
+      }
+
+      return res.status(200).json({ success: true });
+    } catch (error: Error | unknown) {
+      return res.status(400).json({
+        error: error instanceof Error ? error.message : "Unexpected error",
+      });
+    }
+  }
 }
