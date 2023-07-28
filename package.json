@@ -7,9 +7,7 @@
     "start:dev": "ts-node-dev src/index.ts",
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "typeorm": "typeorm-ts-node-esm",
-    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
-    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed"
+    "typeorm": "typeorm-ts-node-esm"
   },
   "author": "Igor Sprovieri",
   "license": "ISC",
