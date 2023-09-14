@@ -8,6 +8,16 @@ Stock controller is a REST API to manage stocks of stores.
 - Create, edit and delete products
 - Dinamic product quantity creating, editing and deleting stock movements
 
+## Documentation
+
+1. Import the file below on Insomnia:
+
+```
+https://github.com/IgorSprovieri/stock-controller-api/blob/main/Insomnia.json
+```
+
+2. Read the docs: [igorsprovieri.github.io/stock-controller-api](https://igorsprovieri.github.io/stock-controller-api)
+
 ## Used Technologies
 
 - Typescript
@@ -23,16 +33,6 @@ Stock controller is a REST API to manage stocks of stores.
 - JWT
 - Bcrypt
 - Migrations
-
-## Documentation
-
-1. Import the file below on Insomnia:
-
-```
-https://github.com/IgorSprovieri/stock-controller-api/blob/main/Insomnia.json
-```
-
-2. Read the docs: [igorsprovieri.github.io/stock-controller-api](https://igorsprovieri.github.io/stock-controller-api)
 
 ## Requirements To Run
 
