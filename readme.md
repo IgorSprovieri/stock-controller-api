@@ -1,10 +1,19 @@
 # Stock Controller API
 
-Stock controller is a REST API to manage stocks of stores and developed with:
+Stock controller is a REST API to manage stocks of stores.
 
+## Features
+
+- Login system with JWT
+- Create, edit and delete products
+- Dinamic product quantity creating, editing and deleting stock movements
+
+## Used Technologies
+
+- Typescript
 - Express
-- Postgres
 - TypeORM
+- Postgres
 
 ## Main Concepts Applied
 
@@ -27,9 +36,8 @@ https://github.com/IgorSprovieri/stock-controller-api/blob/main/Insomnia.json
 
 ## Requirements To Run
 
-- Node
-- Typescript
-- Docker
+- Node ([nodejs.org](https://nodejs.org/en))
+- Docker ([www.docker.com](https://www.docker.com))
 
 ## Getting Started
 
@@ -90,4 +98,4 @@ npm run start:dev
 
 ---
 
-Programmer since 2013, I started to work professionaly in 2020, developing games with Unity, where I opened my game studio and until 2022 I developed 16 team projects, copyright and third-party. I was also a writer for more than a year on the website crieseusjogos.com.br. After this period I started to dedicate to web development and today I work as a fulltack developer with react, next, typescript and node.
+After working as a Unity developer for 3 years, I migrated to the web development area and currently have Fullstack knowledge with React and Node. I have an app for the Apple Store and Google Play and a library for creating web pages inspired by React.
