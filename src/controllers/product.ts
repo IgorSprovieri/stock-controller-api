@@ -70,10 +70,11 @@ export class ProductController {
       const { body } = req;
 
       const schema = object({
+        id: string().uuid().required(),
         name: string().required(),
       });
 
-      await schema.validate(body);
+      await schema.validate({ ...body, ...params });
 
       const { name } = body;
       const { id } = params;
@@ -115,6 +116,12 @@ export class ProductController {
   async delete(req: Request, res: Response) {
     try {
       const { params } = req;
+
+      const schema = object({
+        id: string().uuid().required(),
+      });
+
+      await schema.validate(params);
 
       const { id } = params;
 

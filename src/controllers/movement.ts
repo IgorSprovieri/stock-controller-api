@@ -11,7 +11,7 @@ export class MovementController {
       const { body } = req;
 
       const schema = object({
-        product_id: string().required(),
+        product_id: string().uuid().required(),
         date: yupDate().required(),
         quantity: number().integer().required(),
         leftover: boolean().required(),
@@ -94,32 +94,29 @@ export class MovementController {
       const { body, params } = req;
 
       const schema = object({
-        product_id: string(),
+        id: string().uuid().required(),
+        productId: string().uuid().required(),
         date: yupDate(),
         quantity: number().integer(),
       });
 
-      await schema.validate(body);
+      await schema.validate({ ...params, ...body });
 
       const { product_id, quantity, date, leftover } = body;
       const { id } = params;
 
-      const movement = await dataBase
+      const movements = await dataBase
         .getRepository(Movement)
-        .findOneBy({ id: id });
+        .find({ where: { id: id }, relations: ["product"] });
+
+      const movement = movements[0];
 
       if (!movement) {
         return res.status(404).json({ error: "Movement not found" });
       }
 
-      if (product_id) {
-        const oldProduct = await dataBase
-          .getRepository(Product)
-          .findOneBy({ id: product_id });
-
-        if (!oldProduct) {
-          return res.status(404).json({ error: "Old product not found" });
-        }
+      if (product_id !== movement.product.id) {
+        const oldProduct = movement.product;
 
         const newProduct = await dataBase
           .getRepository(Product)
@@ -132,27 +129,24 @@ export class MovementController {
         oldProduct.quantity =
           Number(oldProduct.quantity) - Number(movement.quantity);
 
-        if (quantity) {
-          movement.quantity = Number(quantity);
-        }
+        movement.quantity = Number(quantity);
 
         newProduct.quantity =
           Number(newProduct.quantity) + Number(movement.quantity);
 
-        await dataBase.getRepository(Product).save(oldProduct);
-        await dataBase.getRepository(Product).save(newProduct);
+        await Promise.all([
+          dataBase.getRepository(Product).save(oldProduct),
+          dataBase.getRepository(Product).save(newProduct),
+        ]);
 
         movement.product = newProduct;
       }
 
-      if (quantity && !product_id) {
-        const product = await dataBase
-          .getRepository(Product)
-          .findOneBy({ id: product_id });
-
-        if (!product) {
-          return res.status(404).json({ error: "Product not found" });
-        }
+      if (
+        quantity !== movement.quantity &&
+        product_id === movement.product.id
+      ) {
+        const product = movement.product;
 
         product.quantity =
           Number(product.quantity) +
@@ -177,7 +171,7 @@ export class MovementController {
         .save(movement);
 
       if (!movementUpdated) {
-        throw new Error("Rent not updated");
+        throw new Error("Movement not updated");
       }
 
       return res.status(200).json(movementUpdated);
@@ -191,6 +185,12 @@ export class MovementController {
   async delete(req: Request, res: Response) {
     try {
       const { params } = req;
+
+      const schema = object({
+        id: string().uuid().required(),
+      });
+
+      await schema.validate(params);
 
       const { id } = params;
 
@@ -219,7 +219,7 @@ export class MovementController {
         .delete(movement);
 
       if (!movementDeleted) {
-        throw new Error("Rent not updated");
+        throw new Error("Movement not deleted");
       }
 
       return res.status(200).json({ success: true });
